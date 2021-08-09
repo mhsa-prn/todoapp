@@ -12,7 +12,7 @@ class App extends Component {
     //initialize state
     state = {
         todos: [],
-        statusDone : false
+        statusDone: false
     }
 
     addTodo(text) {
@@ -24,18 +24,27 @@ class App extends Component {
         })
     }
 
-    deleteTodo(key){
-        this.setState(prevState=>{
-            return{
-                todos: prevState.todos.filter(item=> item.key!==key)
+    deleteTodo(key) {
+        this.setState(prevState => {
+            return {
+                todos: prevState.todos.filter(item => item.key !== key)
             }
         })
     }
 
+    toggleTodo(key) {
+        let {todos} = this.state
+        let item = todos.find(item => item.key === key)
+        item.done = !item.done
+
+        this.setState({
+            todos: [...todos]
+        })
+    }
 
     render() {
-        let {todos , statusDone} = this.state
-        let filterTodos= todos.filter(item=>item.done===statusDone)
+        let {todos, statusDone} = this.state
+        let filterTodos = todos.filter(item => item.done === statusDone)
         // console.log(filterTodos)
 
         return (
@@ -54,23 +63,25 @@ class App extends Component {
                             <div className="d-flex flex-column align-items-center ">
                                 <nav className="col-6 mb-3">
                                     <div className="nav nav-tabs" id="nav-tab" role="tablist">
-                                        <a className={`nav-item nav-link font-weight-bold ${statusDone ? '' : 'active' }`}
-                                           onClick={()=>this.setState({statusDone: false})}
+                                        <a className={`nav-item nav-link font-weight-bold ${statusDone ? '' : 'active'}`}
+                                           onClick={() => this.setState({statusDone: false})}
                                            d="nav-home-tab">undone <span className="badge badge-secondary">
-                                            {todos.filter(item=> item.done===false).length}
+                                            {todos.filter(item => item.done === false).length}
                                         </span></a>
-                                        <a className={`nav-item nav-link font-weight-bold ${statusDone ? 'active' : '' }`}
-                                           onClick={()=>this.setState({statusDone: true})}
+                                        <a className={`nav-item nav-link font-weight-bold ${statusDone ? 'active' : ''}`}
+                                           onClick={() => this.setState({statusDone: true})}
                                            id="nav-profile-tab">done <span className="badge badge-success">
-                                            {todos.filter(item=> item.done===true).length}
+                                            {todos.filter(item => item.done === true).length}
                                         </span></a>
                                     </div>
                                 </nav>
-                                    {
-                                        todos.length === 0
-                                            ? <p>There is no todos</p>
-                                            : filterTodos.map(item => <Todo item={item} delete={this.deleteTodo.bind(this)}/>)
-                                    }
+                                {
+                                    todos.length === 0
+                                        ? <p>There is no todos</p>
+                                        : filterTodos.map(item => <Todo item={item}
+                                                                        delete={this.deleteTodo.bind(this)}
+                                                                        done={this.toggleTodo.bind(this)}/>)
+                                }
                             </div>
 
                         </div>
